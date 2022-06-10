@@ -1,4 +1,4 @@
-import { ship } from './index';
+import { ship } from '../src/index';
 
 describe('ship tests', () => {
   test('creates ship with correct length', () => {
