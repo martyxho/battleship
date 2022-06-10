@@ -37,6 +37,7 @@ const gameboard = (() => {
     const gameboard = createGameboard();
     const ships = createShips();
     fillGrid([1, 1], [1, 4], 'hori', ships.s4a, gameboard);
+    console.log(gameboard);
   }
   function fillGrid(c1, c2, dir, ship, gameboard) {
     if (dir === 'hori') {
@@ -84,4 +85,4 @@ const gameboard = (() => {
   return { createGameboard };
 })();
 
-export { ship };
+export { ship, gameboard };
