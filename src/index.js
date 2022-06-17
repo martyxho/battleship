@@ -71,6 +71,16 @@ const gameboard = () => {
     fillGrid([3, 'J'], [3, 'J'], true, ships.s1c);
     fillGrid([8, 'C'], [8, 'C'], true, ships.s1d);
   }
+  function hitAll() {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    Object.values(grid).forEach((e, i) => {
+      Object.values(e).forEach((x, j) => {
+        const a = i + 1;
+        const b = alphabet[j];
+        receiveAttack(a, b);
+      });
+    });
+  }
   function sinkAll() {
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     Object.values(grid).forEach((e, i) => {
@@ -148,8 +158,19 @@ const gameboard = () => {
   function getGrid() {
     return grid;
   }
+
+  function full() {
+    let result = true;
+    Object.values(grid).forEach((e) => {
+      const check = Object.values(e).includes(null);
+      if (check) {
+        result = false;
+      }
+    });
+    return result;
+  }
   return {
-    getGrid, populateGameboard, receiveAttack, sinkAll, allSunk,
+    getGrid, populateGameboard, receiveAttack, sinkAll, allSunk, full, hitAll,
   };
 };
 
@@ -171,23 +192,17 @@ const computer = () => {
   function attack(playerBoard) {
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const grid = playerBoard.getGrid();
-    console.log(Object.keys(grid));
-    Object.values(grid).forEach((e, i) => {
-      Object.values(e).forEach((x, j) => {
-        if (!x) {
-          const a = i + 1;
-          const b = alphabet[j];
-          playerBoard.receiveAttack(a, b);
-        }
-      });
-    });
+    while (!playerBoard.full()) {
+      const a = (Math.floor(Math.random() * 10)) + 1;
+      const b = alphabet[Math.floor(Math.random() * 10)];
+      if (!grid[a][b].marker) {
+        playerBoard.receiveAttack(a, b);
+        return;
+      }
+    }
   }
   return { getBoard, attack };
 };
-
-const gBoard = gameboard();
-gBoard.populateGameboard();
-gBoard.sinkAll();
 
 export {
   ship, gameboard, player, computer,

@@ -108,22 +108,45 @@ describe('computer tests', () => {
     const board = c1.getBoard();
     expect(board.hasOwnProperty('sinkAll')).toBe(true);
   });
-  test('calls receive attack on null grid', () => {
-    const p1 = player();
-    const pBoard = p1.getBoard();
+  test('calls receive attack when board is not full', () => {
+    const board = gameboard();
+    board.populateGameboard();
+    const grid = board.getGrid();
+    const mockBoard = { full: () => false, getGrid: () => grid, receiveAttack: jest.fn() };
     const c1 = computer();
-    c1.attack(pBoard);
-    const grid = pBoard.getGrid();
-    expect(grid[1].A.marker).toBe('x');
+    c1.attack(mockBoard);
+    expect(mockBoard.receiveAttack.mock.calls.length).toBe(1);
   });
-  test('skips if grid is not null', () => {
-    const p1 = player();
-    const pBoard = p1.getBoard();
+  test('does not call receive attack when board is full', () => {
+    const board = gameboard();
+    board.populateGameboard();
+    const grid = board.getGrid();
+    const mockBoard = { full: () => true, getGrid: () => grid, receiveAttack: jest.fn() };
     const c1 = computer();
-    c1.attack(pBoard);
-    const grid = pBoard.getGrid();
-    expect(grid[1].A.marker).toBe('x');
-    c1.attack(pBoard);
-    expect(grid[1].B.marker).toBe('x');
+    c1.attack(mockBoard);
+    expect(mockBoard.receiveAttack.mock.calls.length).toBe(0);
+  });
+  test('calls recieve attack with valid args', () => {
+    const board = gameboard();
+    board.populateGameboard();
+    const grid = board.getGrid();
+    const mockBoard = { full: () => false, getGrid: () => grid, receiveAttack: jest.fn() };
+    const c1 = computer();
+    c1.attack(mockBoard);
+    const a = mockBoard.receiveAttack.mock.calls[0][0];
+    const b = mockBoard.receiveAttack.mock.calls[0][1];
+    expect(a).toBeLessThanOrEqual(10);
+    expect(a).toBeGreaterThanOrEqual(1);
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    expect(alphabet).toContain(b);
+  });
+  // test creates infinite loop -- rethink
+  test('does not call receiveAttack on coord that has been hit', () => {
+    const board = gameboard();
+    board.hitAll();
+    const grid = board.getGrid();
+    const mockBoard = { full: () => false, getGrid: () => grid, receiveAttack: jest.fn() };
+    const c1 = computer();
+    c1.attack(mockBoard);
   });
 });
