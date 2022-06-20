@@ -1,6 +1,7 @@
-import {
-  ship, gameboard, player, computer,
-} from '../src/index';
+import gameboard from '../src/gameboard';
+import ship from '../src/ship';
+import player from '../src/player';
+import computer from '../src/computer';
 
 describe('ship tests', () => {
   test('creates ship with correct length', () => {
@@ -141,12 +142,25 @@ describe('computer tests', () => {
     expect(alphabet).toContain(b);
   });
   // test creates infinite loop -- rethink
-  test('does not call receiveAttack on coord that has been hit', () => {
+  test('does not call receive attack on grids that have been hit', () => {
     const board = gameboard();
     board.hitAll();
     const grid = board.getGrid();
+    grid[1].A = null;
     const mockBoard = { full: () => false, getGrid: () => grid, receiveAttack: jest.fn() };
     const c1 = computer();
     c1.attack(mockBoard);
+    expect(mockBoard.receiveAttack).toHaveBeenCalledWith(1, 'A');
+  });
+  test('calls recieve attack on ships', () => {
+    const board = gameboard();
+    board.hitAll();
+    const grid = board.getGrid();
+    const testShip = ship.createShip(1);
+    grid[1].A = testShip;
+    const mockBoard = { full: () => false, getGrid: () => grid, receiveAttack: jest.fn() };
+    const c1 = computer();
+    c1.attack(mockBoard);
+    expect(mockBoard.receiveAttack).toHaveBeenCalledWith(1, 'A');
   });
 });
