@@ -1,16 +1,23 @@
 const createGrid = (() => {
-  const grids = document.querySelectorAll('.grid');
-  grids.forEach((g) => {
+  const pGrid = document.querySelector('#left .grid');
+  const cGrid = document.querySelector('#right .grid');
+  createGridBoxes(pGrid, false);
+  createGridBoxes(cGrid, true);
+  function createGridBoxes(grid, comp) {
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     for (let i = 1; i < 11; i++) {
       alphabet.forEach((e) => {
         const div = document.createElement('div');
         div.classList = 'grid-div';
         div.dataset.coord = [i, e];
-        g.appendChild(div);
+        if (comp) {
+          div.addEventListener('click', attack);
+        }
+        grid.appendChild(div);
       });
     }
-  });
+  }
+  function attack() {}
 })();
 
 const createGridGuides = (() => {
@@ -39,3 +46,24 @@ const createGridGuides = (() => {
     }
   }
 })();
+
+const displayShips = (() => {
+  function display(grid) {
+    const gridDisplay = document.querySelector('#left .grid');
+    Object.entries(grid).forEach((e) => {
+      const [key1, val1] = e;
+      Object.entries(val1).forEach((j) => {
+        const [key2, val2] = j;
+        if (val2) {
+          if (val2.hasOwnProperty('isSunk')) {
+            const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
+            box.classList.add('ship');
+          }
+        }
+      });
+    });
+  }
+  return { display };
+})();
+
+export { displayShips };
