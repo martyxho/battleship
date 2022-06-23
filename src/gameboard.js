@@ -7,14 +7,14 @@ const gameboard = () => {
     const coord = grid[a][b];
     if (coord) {
       if (coord.hasOwnProperty('marker')) {
-        return 'illegal';
+        throw new Error('illegal hit on marker');
       }
       coord.hit();
       grid[a][b] = hitObj(coord);
-      return;
+      return true;
     }
     grid[a][b] = hitObj();
-    return grid[a][b];
+    return false;
   }
 
   function hitObj(ship = null) {

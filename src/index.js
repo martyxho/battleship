@@ -18,10 +18,13 @@ const game = (() => {
   }
   function receivePlayerAttack(coord) {
     const [a, b] = coord;
-    cBoard.receiveAttack(a, b);
+    const hit = cBoard.receiveAttack(a, b);
     displayState.display(pBoard.getGrid(), cBoard.getGrid());
     if (checkEnd()) {
       endGame('player');
+      return;
+    }
+    if (hit) {
       return;
     }
     gameLoop();

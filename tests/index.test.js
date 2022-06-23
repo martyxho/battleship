@@ -81,8 +81,8 @@ describe('populated gameboard tests', () => {
   });
   test('returns illegal if called on same coord', () => {
     gBoard.receiveAttack(1, 'A');
-    const result = gBoard.receiveAttack(1, 'A');
-    expect(result).toBe('illegal');
+    const fn = () => gBoard.receiveAttack(1, 'A');
+    expect(fn).toThrow();
   });
   test('returns true if all ships are sunk', () => {
     gBoard.sinkAll();
@@ -141,7 +141,6 @@ describe('computer tests', () => {
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     expect(alphabet).toContain(b);
   });
-  // test creates infinite loop -- rethink
   test('does not call receive attack on grids that have been hit', () => {
     const board = gameboard();
     board.hitAll();
@@ -152,7 +151,7 @@ describe('computer tests', () => {
     c1.attack(mockBoard);
     expect(mockBoard.receiveAttack).toHaveBeenCalledWith(1, 'A');
   });
-  test('calls recieve attack on ships', () => {
+  test('calls receive attack on ships', () => {
     const board = gameboard();
     board.hitAll();
     const grid = board.getGrid();
