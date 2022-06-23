@@ -1,6 +1,6 @@
 import gameboard from './gameboard';
 
-const computer = () => {
+const computerFactory = () => {
   const board = gameboard();
   board.populateGameboard();
   function getBoard() {
@@ -21,4 +21,4 @@ const computer = () => {
   return { getBoard, attack };
 };
 
-export default computer;
+export default computerFactory;

@@ -1,4 +1,6 @@
-const createGrid = (() => {
+import game from '.';
+
+const grid = (() => {
   const pGrid = document.querySelector('#left .grid');
   const cGrid = document.querySelector('#right .grid');
   createGridBoxes(pGrid, false);
@@ -11,13 +13,24 @@ const createGrid = (() => {
         div.classList = 'grid-div';
         div.dataset.coord = [i, e];
         if (comp) {
-          div.addEventListener('click', attack);
+          div.addEventListener('click', attack, { once: true });
         }
         grid.appendChild(div);
       });
     }
   }
-  function attack() {}
+  function attack(e) {
+    const coord = e.target.dataset.coord.split(',');
+    game.receivePlayerAttack(coord);
+  }
+  function removeListeners() {
+    const cGrid = document.querySelector('#left .grid');
+    const divs = cGrid.querySelectorAll('.grid-div');
+    divs.forEach((e) => {
+      e.removeEventListener('click', attack, { once: true });
+    });
+  }
+  return { removeListeners };
 })();
 
 const createGridGuides = (() => {
@@ -47,8 +60,12 @@ const createGridGuides = (() => {
   }
 })();
 
-const displayShips = (() => {
-  function display(grid) {
+const displayState = (() => {
+  function display(pGrid, cGrid) {
+    displayShips(pGrid);
+    displayHitsBoth(pGrid, cGrid);
+  }
+  function displayShips(grid) {
     const gridDisplay = document.querySelector('#left .grid');
     Object.entries(grid).forEach((e) => {
       const [key1, val1] = e;
@@ -63,7 +80,33 @@ const displayShips = (() => {
       });
     });
   }
+  function displayHitsBoth(pGrid, cGrid) {
+    const pGridDisplay = document.querySelector('#left .grid');
+    const cGridDisplay = document.querySelector('#right .grid');
+    displayHits(pGrid, pGridDisplay);
+    displayHits(cGrid, cGridDisplay);
+  }
+
+  function displayHits(grid, gridDisplay) {
+    Object.entries(grid).forEach((e) => {
+      const [key1, val1] = e;
+      Object.entries(val1).forEach((j) => {
+        const [key2, val2] = j;
+        if (val2) {
+          if (val2.hasOwnProperty('marker')) {
+            const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
+            box.textContent = 'h';
+          }
+        }
+      });
+    });
+  }
   return { display };
 })();
 
-export { displayShips };
+function endGame(winner) {
+  grid.removeListeners();
+  alert(`${winner} wins!`);
+}
+
+export { displayState, endGame };

@@ -53,6 +53,10 @@
   border: solid 1px rgb(182, 171, 228);
   margin-top: -1px;
   border-right: none;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
 }
 
 .grid-div:nth-child(10n) {

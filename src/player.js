@@ -1,12 +1,14 @@
 import gameboard from './gameboard';
 
-const player = () => {
+const playerFactory = () => {
   const board = gameboard();
   board.populateGameboard();
   function getBoard() {
     return board;
   }
+  function turn(cBoard) {
+  }
   return { getBoard };
 };
 
-export default player;
+export default playerFactory;
