@@ -1,4 +1,6 @@
 import game from '.';
+import x from './assets/close.svg';
+import dot from './assets/circle-medium.svg';
 
 const grid = (() => {
   const pGrid = document.querySelector('#left .grid');
@@ -15,6 +17,8 @@ const grid = (() => {
         if (comp) {
           div.addEventListener('click', attack, { once: true });
         }
+        const img = document.createElement('img');
+        div.appendChild(img);
         grid.appendChild(div);
       });
     }
@@ -95,7 +99,12 @@ const displayState = (() => {
         if (val2) {
           if (val2.hasOwnProperty('marker')) {
             const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
-            box.textContent = 'h';
+            const img = box.querySelector('img');
+            if (val2.hasOwnProperty('ship')) {
+              img.src = x;
+            } else {
+              img.src = dot;
+            }
           }
         }
       });

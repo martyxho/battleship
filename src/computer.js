@@ -13,8 +13,7 @@ const computerFactory = () => {
       const a = (Math.floor(Math.random() * 10)) + 1;
       const b = alphabet[Math.floor(Math.random() * 10)];
       if (!grid[a][b] || !grid[a][b].hasOwnProperty('marker')) {
-        playerBoard.receiveAttack(a, b);
-        return;
+        return playerBoard.receiveAttack(a, b);
       }
     }
   }

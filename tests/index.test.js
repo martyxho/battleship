@@ -163,3 +163,14 @@ describe('computer tests', () => {
     expect(mockBoard.receiveAttack).toHaveBeenCalledWith(1, 'A');
   });
 });
+
+// describe('game tests', () => {
+//   test('computer will attack again if it hits a ship', () => {
+//     const mockComp = {
+//       attack: jest.fn(),
+//     };
+//     mockComp.attack.mockReturnValueOnce(true).mockReturnValueOnce(false);
+//     game.gameLoop(mockComp);
+//     expect(mockComp.attack.mock.calls.length).toBe(1);
+//   });
+// });

@@ -9,12 +9,15 @@ const game = (() => {
   const computer = computerFactory();
   const cBoard = computer.getBoard();
   displayState.display(pBoard.getGrid(), cBoard.getGrid());
-  function gameLoop() {
-    computer.attack(pBoard);
-    displayState.display(pBoard.getGrid(), cBoard.getGrid());
-    if (checkEnd()) {
-      endGame('computer');
-    }
+  function gameLoop(comp = computer) {
+    let hit = false;
+    do {
+      hit = comp.attack(pBoard);
+      displayState.display(pBoard.getGrid(), cBoard.getGrid());
+      if (checkEnd()) {
+        endGame('computer');
+      }
+    } while (hit);
   }
   function receivePlayerAttack(coord) {
     const [a, b] = coord;
@@ -33,7 +36,7 @@ const game = (() => {
   function checkEnd() {
     return (pBoard.allSunk() || cBoard.allSunk());
   }
-  return { receivePlayerAttack };
+  return { receivePlayerAttack, gameLoop };
 })();
 
 export default game;
