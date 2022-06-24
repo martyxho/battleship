@@ -34,7 +34,10 @@ const grid = (() => {
       e.removeEventListener('click', attack, { once: true });
     });
   }
-  return { removeListeners };
+  function removeOneListener(box) {
+    box.removeEventListener('click', attack);
+  }
+  return { removeListeners, removeOneListener };
 })();
 
 const createGridGuides = (() => {
@@ -88,17 +91,20 @@ const displayState = (() => {
     const pGridDisplay = document.querySelector('#left .grid');
     const cGridDisplay = document.querySelector('#right .grid');
     displayHits(pGrid, pGridDisplay);
-    displayHits(cGrid, cGridDisplay);
+    displayHits(cGrid, cGridDisplay, true);
   }
 
-  function displayHits(grid, gridDisplay) {
-    Object.entries(grid).forEach((e) => {
+  function displayHits(g, gridDisplay, comp = true) {
+    Object.entries(g).forEach((e) => {
       const [key1, val1] = e;
       Object.entries(val1).forEach((j) => {
         const [key2, val2] = j;
         if (val2) {
           if (val2.hasOwnProperty('marker')) {
             const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
+            if (comp) {
+              grid.removeOneListener(box);
+            }
             const img = box.querySelector('img');
             if (val2.hasOwnProperty('ship')) {
               img.src = x;

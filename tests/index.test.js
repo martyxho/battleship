@@ -81,8 +81,8 @@ describe('populated gameboard tests', () => {
   });
   test('returns illegal if called on same coord', () => {
     gBoard.receiveAttack(1, 'A');
-    const fn = () => gBoard.receiveAttack(1, 'A');
-    expect(fn).toThrow();
+    const result = gBoard.receiveAttack(1, 'A');
+    expect(result).toBe('illegal hit on marker');
   });
   test('returns true if all ships are sunk', () => {
     gBoard.sinkAll();

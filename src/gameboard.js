@@ -7,16 +7,39 @@ const gameboard = () => {
     const coord = grid[a][b];
     if (coord) {
       if (coord.hasOwnProperty('marker')) {
-        throw new Error('illegal hit on marker');
+        return 'illegal hit on marker';
       }
       coord.hit();
       grid[a][b] = hitObj(coord);
+      hitDiagonals(a, b);
       return true;
     }
     grid[a][b] = hitObj();
     return false;
   }
 
+  function hitDiagonals(a, b) {
+    const upLeft = [(+a - 1), getAlpha(b, -1)];
+    const upRight = [(+a - 1), getAlpha(b, 1)];
+    const downLeft = [(+a + 1), getAlpha(b, -1)];
+    const downRight = [(+a + 1), getAlpha(b, 1)];
+    const diagonals = [upLeft, upRight, downLeft, downRight];
+    diagonals.forEach((e) => hitDiagonal(e));
+  }
+
+  function hitDiagonal(d) {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const [a, b] = d;
+    if ((a > 0 && a < 11) && alphabet.includes(b)) {
+      receiveAttack(a, b);
+    }
+  }
+
+  function getAlpha(b, n) {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const i = alphabet.indexOf(b) + n;
+    return alphabet[i];
+  }
   function hitObj(ship = null) {
     const obj = { marker: 'x' };
     if (ship) {
