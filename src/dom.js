@@ -108,8 +108,10 @@ const displayState = (() => {
             const img = box.querySelector('img');
             if (val2.hasOwnProperty('ship')) {
               img.src = x;
+              box.classList.add('hit');
             } else {
               img.src = dot;
+              box.classList.add('miss');
             }
           }
         }

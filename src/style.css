@@ -72,3 +72,12 @@
 .ship {
   background-color: rgba(99, 111, 212, 0.301);
 }
+
+.hit {
+  background-color: rgba(212, 210, 99, 0.349);
+}
+
+.miss {
+  opacity: .7;
+  background-color: rgba(99, 110, 212, 0.103);
+}
