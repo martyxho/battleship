@@ -65,7 +65,7 @@ const gameboard = () => {
     const ships = createShips();
     Object.values(ships).forEach((e) => {
       const { length } = e;
-      const x = 9 - length;
+      const x = 11 - length;
       let keepGoing = true;
       while (keepGoing) {
         const letter = alphabet[Math.floor(Math.random() * 10)];
