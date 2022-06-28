@@ -70,10 +70,26 @@ const createGridGuides = (() => {
 const displayState = (() => {
   function display(pGrid, cGrid) {
     displayShips(pGrid);
+    displayShipsComputer(cGrid);
     displayHitsBoth(pGrid, cGrid);
   }
   function displayShips(grid) {
     const gridDisplay = document.querySelector('#left .grid');
+    Object.entries(grid).forEach((e) => {
+      const [key1, val1] = e;
+      Object.entries(val1).forEach((j) => {
+        const [key2, val2] = j;
+        if (val2) {
+          if (val2.hasOwnProperty('isSunk')) {
+            const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
+            box.classList.add('ship');
+          }
+        }
+      });
+    });
+  }
+  function displayShipsComputer(grid) {
+    const gridDisplay = document.querySelector('#right .grid');
     Object.entries(grid).forEach((e) => {
       const [key1, val1] = e;
       Object.entries(val1).forEach((j) => {

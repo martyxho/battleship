@@ -164,6 +164,33 @@ describe('computer tests', () => {
   });
 });
 
+describe('private -- gameboard tests', () => {
+  test('checkGrid works', () => {
+    const testBoard = gameboard();
+    const testShip = ship.createShip(4);
+    testBoard.fillGrid([1, 'A'], [4, 'A'], false, testShip);
+    const result2 = testBoard.checkGrid(1, 'A', testShip);
+    expect(result2).toBe(false);
+  });
+  test('checkSurrounding works', () => {
+    const testBoard = gameboard();
+    const testShip1 = ship.createShip(4);
+    const testShip2 = ship.createShip(3);
+    const result1 = testBoard.checkSurrounding(4, 'C', testShip2);
+    expect(result1).toBe(true);
+    testBoard.fillGrid([3, 'A'], [3, 'D'], true, testShip1);
+    const result2 = testBoard.checkSurrounding(4, 'C', testShip2);
+    expect(result2).toBe(false);
+  });
+  test('checkGrid with checkSurrounding works', () => {
+    const testBoard = gameboard();
+    const testShip1 = ship.createShip(4);
+    const testShip2 = ship.createShip(3);
+    testBoard.fillGrid([3, 'A'], [7, 'A'], false, testShip1);
+    const result = testBoard.checkGrid(3, 'B', testShip2);
+    expect(result).toBe(false);
+  });
+});
 // describe('game tests', () => {
 //   test('computer will attack again if it hits a ship', () => {
 //     const mockComp = {

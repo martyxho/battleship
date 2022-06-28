@@ -2,7 +2,7 @@ import gameboard from './gameboard';
 
 const computerFactory = () => {
   const board = gameboard();
-  board.populateGameboard();
+  board.randomPopulate();
   function getBoard() {
     return board;
   }

@@ -60,6 +60,66 @@ const gameboard = () => {
     fillGrid([3, 'J'], [3, 'J'], true, ships.s1c);
     fillGrid([8, 'C'], [8, 'C'], true, ships.s1d);
   }
+  function randomPopulate() {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const ships = createShips();
+    Object.values(ships).forEach((e) => {
+      const { length } = e;
+      const x = 9 - length;
+      let keepGoing = true;
+      while (keepGoing) {
+        const letter = alphabet[Math.floor(Math.random() * 10)];
+        const number = (Math.floor(Math.random() * x)) + 1;
+        const end = number + length - 1;
+        const test = checkGrid(number, letter, e);
+        if (test) {
+          keepGoing = false;
+          fillGrid([number, letter], [end, letter], false, e);
+        }
+      }
+    });
+  }
+  function checkGrid(number, letter, ship) {
+    let works = true;
+    const start = number;
+    const end = number + ship.length;
+    for (let i = number; i < end; i++) {
+      const check = !checkSurrounding(i, letter, ship);
+      if (grid[i][letter] || check) {
+        works = false;
+      }
+    }
+    return works;
+  }
+  function checkSurrounding(i, b, shipObj) {
+    const iUp = i - 1;
+    const iDown = i + 1;
+    const bLeft = getAlpha(b, -1);
+    const bRight = getAlpha(b, 1);
+    const upLeft = [iUp, bLeft];
+    const up = [iUp, b];
+    const upRight = [iUp, bRight];
+    const left = [i, bLeft];
+    const right = [i, bRight];
+    const downLeft = [iDown, bLeft];
+    const down = [iDown, b];
+    const downRight = [iDown, bRight];
+    const surrounding = [upLeft, up, upRight, left, right, downLeft, down, downRight];
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    let works = true;
+    surrounding.forEach((e) => {
+      const [c, d] = e;
+      if ((c > 0 && c < 11) && alphabet.includes(d)) {
+        const boxValue = grid[c][d];
+        if (boxValue) {
+          if (!(boxValue === shipObj)) {
+            works = false;
+          }
+        }
+      }
+    });
+    return works;
+  }
   function hitAll() {
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     Object.values(grid).forEach((e, i) => {
@@ -159,7 +219,17 @@ const gameboard = () => {
     return result;
   }
   return {
-    getGrid, populateGameboard, receiveAttack, sinkAll, allSunk, full, hitAll,
+    getGrid,
+    populateGameboard,
+    receiveAttack,
+    sinkAll,
+    allSunk,
+    full,
+    hitAll,
+    checkGrid,
+    fillGrid,
+    randomPopulate,
+    checkSurrounding,
   };
 };
 
