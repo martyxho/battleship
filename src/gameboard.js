@@ -66,26 +66,65 @@ const gameboard = () => {
     Object.values(ships).forEach((e) => {
       const { length } = e;
       const x = 11 - length;
-      let keepGoing = true;
-      while (keepGoing) {
-        const letter = alphabet[Math.floor(Math.random() * 10)];
-        const number = (Math.floor(Math.random() * x)) + 1;
-        const end = number + length - 1;
-        const test = checkGrid(number, letter, e);
-        if (test) {
-          keepGoing = false;
-          fillGrid([number, letter], [end, letter], false, e);
-        }
+      const random = Math.floor(Math.random() * 2) + 1;
+      if (random > 1) {
+        populateVertical(e);
+      } else {
+        populateHorizontal(e);
       }
     });
   }
-  function checkGrid(number, letter, ship) {
+  function populateVertical(e) {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const x = 11 - e.length;
+    let keepGoing = true;
+    while (keepGoing) {
+      const letter = alphabet[Math.floor(Math.random() * 10)];
+      const number = (Math.floor(Math.random() * x)) + 1;
+      const end = number + e.length - 1;
+      const test = checkGridVert(number, letter, e);
+      if (test) {
+        keepGoing = false;
+        fillGrid([number, letter], [end, letter], false, e);
+      }
+    }
+  }
+  function populateHorizontal(e) {
+    console.log(`called with: ${e.length}`);
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const x = 11 - e.length;
+    let keepGoing = true;
+    while (keepGoing) {
+      const number = Math.floor(Math.random() * 10) + 1;
+      const start = Math.floor(Math.random() * x);
+      const end = start + e.length - 1;
+      const test = checkGridHori(number, start, e);
+      if (test) {
+        keepGoing = false;
+        fillGrid([number, alphabet[start]], [number, alphabet[end]], true, e);
+      }
+    }
+  }
+  function checkGridVert(number, letter, ship) {
     let works = true;
     const start = number;
     const end = number + ship.length;
     for (let i = number; i < end; i++) {
       const check = !checkSurrounding(i, letter, ship);
       if (grid[i][letter] || check) {
+        works = false;
+      }
+    }
+    return works;
+  }
+  function checkGridHori(number, start, ship) {
+    let works = true;
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const end = start + ship.length;
+    for (let i = start; i < end; i++) {
+      const letter = alphabet[i];
+      const check = !checkSurrounding(number, letter, ship);
+      if (grid[number][letter] || check) {
         works = false;
       }
     }
@@ -226,7 +265,7 @@ const gameboard = () => {
     allSunk,
     full,
     hitAll,
-    checkGrid,
+    checkGridVert,
     fillGrid,
     randomPopulate,
     checkSurrounding,
