@@ -266,6 +266,7 @@ const gameboard = () => {
     full,
     hitAll,
     checkGridVert,
+    checkGridHori,
     fillGrid,
     randomPopulate,
     checkSurrounding,

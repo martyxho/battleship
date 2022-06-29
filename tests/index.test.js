@@ -165,12 +165,21 @@ describe('computer tests', () => {
 });
 
 describe('private -- gameboard tests', () => {
-  test('checkGrid works', () => {
+  test('checkGridVert works', () => {
     const testBoard = gameboard();
     const testShip = ship.createShip(4);
+    const testShip2 = ship.createShip(4);
     testBoard.fillGrid([1, 'A'], [4, 'A'], false, testShip);
-    const result2 = testBoard.checkGrid(1, 'A', testShip);
+    const result2 = testBoard.checkGridVert(1, 'A', testShip2);
     expect(result2).toBe(false);
+  });
+  test('checkGridHori works', () => {
+    const testBoard = gameboard();
+    const testShip = ship.createShip(4);
+    const testShip2 = ship.createShip(4);
+    testBoard.fillGrid([1, 'A'], [1, 'D'], true, testShip);
+    const result = testBoard.checkGridHori(1, 0, testShip2);
+    expect(result).toBe(false);
   });
   test('checkSurrounding works', () => {
     const testBoard = gameboard();
@@ -182,12 +191,12 @@ describe('private -- gameboard tests', () => {
     const result2 = testBoard.checkSurrounding(4, 'C', testShip2);
     expect(result2).toBe(false);
   });
-  test('checkGrid with checkSurrounding works', () => {
+  test('checkGridVert with checkSurrounding works', () => {
     const testBoard = gameboard();
     const testShip1 = ship.createShip(4);
     const testShip2 = ship.createShip(3);
     testBoard.fillGrid([3, 'A'], [7, 'A'], false, testShip1);
-    const result = testBoard.checkGrid(3, 'B', testShip2);
+    const result = testBoard.checkGridVert(3, 'B', testShip2);
     expect(result).toBe(false);
   });
 });
