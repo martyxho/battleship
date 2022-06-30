@@ -2,11 +2,9 @@ import gameboard from './gameboard';
 
 const playerFactory = () => {
   const board = gameboard();
-  board.populateGameboard();
+  board.randomPopulate();
   function getBoard() {
     return board;
-  }
-  function turn(cBoard) {
   }
   return { getBoard };
 };

@@ -110,7 +110,7 @@ const displayState = (() => {
     displayHits(cGrid, cGridDisplay, true);
   }
 
-  function displayHits(g, gridDisplay, comp = true) {
+  function displayHits(g, gridDisplay, comp = false) {
     Object.entries(g).forEach((e) => {
       const [key1, val1] = e;
       Object.entries(val1).forEach((j) => {

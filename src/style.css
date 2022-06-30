@@ -15,8 +15,8 @@
 .main {
   background-color: white;
   display: grid;
+  grid-template-rows: 1fr max-content 1fr;
   justify-content: center;
-  align-items: center;
 }
 
 .container {

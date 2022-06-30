@@ -90,7 +90,6 @@ const gameboard = () => {
     }
   }
   function populateHorizontal(e) {
-    console.log(`called with: ${e.length}`);
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const x = 11 - e.length;
     let keepGoing = true;
