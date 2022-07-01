@@ -47,6 +47,7 @@ const computerFactory = () => {
         const [c, d] = e;
         if ((c > 0 && c < 11) && alphabet.includes(d)) {
           if (!grid[c][d] || !grid[c][d].hasOwnProperty('marker')) {
+            console.log(`attacked ${c} ${d}`);
             attackLoop(playerBoard, [c, d]);
             attacked = true;
           }

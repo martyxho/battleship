@@ -10,14 +10,11 @@ const game = (() => {
   const cBoard = computer.getBoard();
   displayState.display(pBoard.getGrid(), cBoard.getGrid());
   function gameLoop(comp = computer) {
-    let hit = false;
-    do {
-      hit = comp.attack(pBoard);
-      displayState.display(pBoard.getGrid(), cBoard.getGrid());
-      if (checkEnd()) {
-        endGame('computer');
-      }
-    } while (hit);
+    comp.attack(pBoard);
+    displayState.display(pBoard.getGrid(), cBoard.getGrid());
+    if (checkEnd()) {
+      endGame('computer');
+    }
   }
   function receivePlayerAttack(coord) {
     const [a, b] = coord;
