@@ -12,12 +12,77 @@ const gameboard = () => {
       coord.hit();
       grid[a][b] = hitObj(coord);
       hitDiagonals(a, b);
+      if (coord.isSunk()) {
+        hitAroundShip(coord);
+      }
       return true;
     }
     grid[a][b] = hitObj();
     return false;
   }
-
+  function hitAroundShip(ship) {
+    const coords = findShip(ship);
+    coords.forEach((e) => {
+      hitSurrounding(e);
+    });
+  }
+  function findShip(ship) {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const coords = [];
+    Object.values(grid).forEach((e, i) => {
+      Object.values(e).forEach((x, j) => {
+        if (x && x.hasOwnProperty('ship') && x.ship === ship) {
+          const a = i + 1;
+          const b = alphabet[j];
+          coords.push([a, b]);
+        }
+      });
+    });
+    return coords;
+  }
+  function hitIfPoss(a, b) {
+    if (!checkValid(a, b)) {
+      return;
+    }
+    const coord = grid[a][b];
+    if (coord) {
+      if (coord.hasOwnProperty('marker')) {
+        return;
+      }
+      coord.hit();
+      grid[a][b] = hitObj(coord);
+      hitDiagonals(a, b);
+      return;
+    }
+    grid[a][b] = hitObj();
+  }
+  function checkValid(a, b) {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    if ((a > 0 && a < 11) && alphabet.includes(b)) {
+      return true;
+    }
+    return false;
+  }
+  function hitSurrounding(coord) {
+    const sur = getSurrounding(coord);
+    sur.forEach((e) => {
+      const [a, b] = e;
+      hitIfPoss(a, b);
+    });
+  }
+  function getSurrounding(coord) {
+    let [a, b] = coord;
+    a = +a;
+    const q = [a - 1, getAlpha(b, -1)];
+    const w = [a - 1, b];
+    const e = [a - 1, getAlpha(b, +1)];
+    const r = [a, getAlpha(b, -1)];
+    const t = [a, getAlpha(b, 1)];
+    const y = [a + 1, getAlpha(b, -1)];
+    const u = [a + 1, b];
+    const i = [a + 1, getAlpha(b, 1)];
+    return [q, w, e, r, t, y, u, i];
+  }
   function hitDiagonals(a, b) {
     const upLeft = [(+a - 1), getAlpha(b, -1)];
     const upRight = [(+a - 1), getAlpha(b, 1)];
