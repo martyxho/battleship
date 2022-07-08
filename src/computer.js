@@ -2,15 +2,6 @@ import gameboard from './gameboard';
 
 const state = (() => {
   const states = {};
-  function setAttackedTrue() {
-    states.attacked = true;
-  }
-  function setAttackedFalse() {
-    states.attacked = false;
-  }
-  function getAttacked() {
-    return states.attacked;
-  }
   function setLastHit(coord) {
     states.hit = coord;
   }
@@ -51,9 +42,6 @@ const state = (() => {
     return state.i;
   }
   return {
-    setAttackedTrue,
-    setAttackedFalse,
-    getAttacked,
     setLastHit,
     getLastHit,
     setAdjMissFalse,
@@ -129,6 +117,12 @@ const computerFactory = () => {
   function checkShip(playerBoard, coord) {
     const grid = playerBoard.getGrid();
     const [a, b] = coord;
+    if (!grid[a][b]) {
+      return false;
+    }
+    if (grid[a][b].hasOwnProperty('marker')) {
+      return grid[a][b].hasOwnProperty('ship');
+    }
     return grid[a][b].hasOwnProperty('isSunk');
   }
   function attackAdjacent(playerBoard, coord) {
@@ -164,25 +158,31 @@ const computerFactory = () => {
     return adj;
   }
   function traverseDir(playerBoard, coord) {
+    const grid = playerBoard.getGrid();
     const adj = calcAdj(coord);
     const i = state.getI();
     const [a, b] = adj[i];
-    if (traverseChecks(playerBoard, [a, b])) {
-      if (!checkShip(playerBoard, [a, b])) {
+    if (outOfBounds([a, b]) || !checkShip(playerBoard, [a, b])) {
+      state.setI(getOpp(i));
+    }
+    if (attackChecks(playerBoard, [a, b])) {
+      if (!grid[a][b]) {
         state.setTraverseMissTrue();
-        state.setI(getOpp(i));
       }
       attackLoop(playerBoard, [a, b]);
       return;
     }
-    if (checkSunk(playerBoard, state.getLastHit())) {
-      attack(playerBoard);
-      return;
-    }
-    state.setI(getOpp(i));
-    traverseDir(playerBoard, state.getLastHit());
+    traverseDir(playerBoard, [a, b]);
   }
-  function traverseChecks(playerBoard, coord) {
+  function outOfBounds(coord) {
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const [a, b] = coord;
+    if ((a > 0 && a < 11) && alphabet.includes(b)) {
+      return false;
+    }
+    return true;
+  }
+  function attackChecks(playerBoard, coord) {
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const grid = playerBoard.getGrid();
     const [a, b] = coord;
@@ -196,13 +196,13 @@ const computerFactory = () => {
   function getOpp(i) {
     switch (i) {
       case 0:
-        return 1;
-      case 1:
-        return 0;
-      case 2:
-        return 3;
-      default:
         return 2;
+      case 1:
+        return 3;
+      case 2:
+        return 0;
+      default:
+        return 1;
     }
   }
   function getAlpha(b, n) {
