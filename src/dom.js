@@ -28,10 +28,10 @@ const grid = (() => {
     game.receivePlayerAttack(coord);
   }
   function removeListeners() {
-    const cGrid = document.querySelector('#left .grid');
+    const cGrid = document.querySelector('#right .grid');
     const divs = cGrid.querySelectorAll('.grid-div');
     divs.forEach((e) => {
-      e.removeEventListener('click', attack, { once: true });
+      e.removeEventListener('click', attack);
     });
   }
   function removeOneListener(box) {
