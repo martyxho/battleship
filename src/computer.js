@@ -106,14 +106,11 @@ const computerFactory = () => {
       state.setTraverseMissFalse();
       const sunk = checkSunk(playerBoard, coord);
       if (sunk) {
-        // here
+        state.setTraverseFalse();
+        attack(playerBoard);
+        return;
       }
       if (state.getTraverse()) {
-        if (checkSunk(playerBoard, coord)) {
-          state.setTraverseFalse();
-          attack(playerBoard);
-          return;
-        }
         traverseDir(playerBoard, coord);
         return;
       }
@@ -170,8 +167,8 @@ const computerFactory = () => {
     const adj = calcAdj(coord);
     const i = state.getI();
     const [a, b] = adj[i];
-    if (traverseChecks(playerBoard, coord)) {
-      if (!checkShip(playerBoard, coord)) {
+    if (traverseChecks(playerBoard, [a, b])) {
+      if (!checkShip(playerBoard, [a, b])) {
         state.setTraverseMissTrue();
         state.setI(getOpp(i));
       }
@@ -183,14 +180,14 @@ const computerFactory = () => {
       return;
     }
     state.setI(getOpp(i));
-    traverseDir(playerBoard, coord);
+    traverseDir(playerBoard, state.getLastHit());
   }
   function traverseChecks(playerBoard, coord) {
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const grid = playerBoard.getGrid();
     const [a, b] = coord;
     if ((a > 0 && a < 11) && alphabet.includes(b)) {
-      if (!grid[a][b].hasOwnProperty('marker')) {
+      if (!grid[a][b] || !grid[a][b].hasOwnProperty('marker')) {
         return true;
       }
     }
