@@ -314,12 +314,21 @@ const gameboard = () => {
   function full() {
     let result = true;
     Object.values(grid).forEach((e) => {
-      const check = Object.values(e).includes(null);
+      const check = Object.values(e).some(isNullOrShip);
       if (check) {
         result = false;
       }
     });
     return result;
+  }
+  function isNullOrShip(e) {
+    if (!e) {
+      return true;
+    }
+    if (e.hasOwnProperty('isSunk')) {
+      return true;
+    }
+    return false;
   }
   return {
     getGrid,
