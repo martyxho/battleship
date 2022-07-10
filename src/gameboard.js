@@ -2,7 +2,7 @@ import ship from './ship';
 
 const gameboard = () => {
   const grid = createGameboard();
-
+  const ships = createShips();
   function receiveAttack(a, b) {
     const coord = grid[a][b];
     if (coord) {
@@ -112,22 +112,7 @@ const gameboard = () => {
     }
     return obj;
   }
-  function populateGameboard() {
-    const ships = createShips();
-    fillGrid([5, 'A'], [8, 'A'], false, ships.s4a);
-    fillGrid([4, 'C'], [4, 'E'], true, ships.s3a);
-    fillGrid([6, 'D'], [6, 'F'], true, ships.s3b);
-    fillGrid([8, 'E'], [9, 'E'], false, ships.s2a);
-    fillGrid([5, 'I'], [6, 'I'], false, ships.s2b);
-    fillGrid([10, 'H'], [10, 'I'], true, ships.s2c);
-    fillGrid([1, 'D'], [1, 'D'], true, ships.s1a);
-    fillGrid([1, 'J'], [1, 'J'], true, ships.s1b);
-    fillGrid([3, 'J'], [3, 'J'], true, ships.s1c);
-    fillGrid([8, 'C'], [8, 'C'], true, ships.s1d);
-  }
   function randomPopulate() {
-    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-    const ships = createShips();
     Object.values(ships).forEach((e) => {
       const { length } = e;
       const x = 11 - length;
@@ -330,9 +315,11 @@ const gameboard = () => {
     }
     return false;
   }
+  function getShips() {
+    return ships;
+  }
   return {
     getGrid,
-    populateGameboard,
     receiveAttack,
     sinkAll,
     allSunk,
@@ -343,6 +330,7 @@ const gameboard = () => {
     fillGrid,
     randomPopulate,
     checkSurrounding,
+    getShips,
   };
 };
 

@@ -67,6 +67,9 @@ const createGridGuides = (() => {
   }
 })();
 
+const shipBox = (() => {
+
+})();
 const displayState = (() => {
   function display(pGrid, cGrid) {
     displayShips(pGrid);
@@ -134,7 +137,20 @@ const displayState = (() => {
       });
     });
   }
-  return { display };
+  function displayShipBox(ships) {
+    const shipBox = document.getElementById('ship-box');
+    Object.values(ships).forEach((e) => {
+      const div = document.createElement('div');
+      div.classList = 'ship-div';
+      for (let i = 0; i < e.length; i++) {
+        const sDiv = document.createElement('div');
+        sDiv.classList = 'ship';
+        div.appendChild(sDiv);
+      }
+      shipBox.appendChild(div);
+    });
+  }
+  return { display, displayShipBox };
 })();
 
 function endGame(winner) {

@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 #content {
@@ -25,6 +26,28 @@
   grid-template-rows: 40px 1fr;
 }
 
+.below {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+#ship-box {
+  width: 400px;
+  height: 200px;
+  border: solid 1px rgb(182, 171, 228);
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+.ship-div {
+  display: flex;
+  margin-right: 10px;
+} 
+#ship-box .ship {
+  height: 39px;
+  width: 39px;
+  border: solid 1px rgb(182, 171, 228);
+}
 .grid {
   grid-column: 2;
   grid-row: 2;
