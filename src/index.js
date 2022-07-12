@@ -35,7 +35,10 @@ const game = (() => {
   function checkEnd() {
     return (pBoard.allSunk() || cBoard.allSunk());
   }
-  return { receivePlayerAttack, gameLoop };
+  function getPBoard() {
+    return pBoard;
+  }
+  return { receivePlayerAttack, gameLoop, getPBoard };
 })();
 
 export default game;

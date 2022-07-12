@@ -2,6 +2,75 @@ import game from '.';
 import x from './assets/close.svg';
 import dot from './assets/circle-medium.svg';
 
+const drag = (() => {
+  const dragData = {};
+  document.addEventListener('dragstart', (e) => {
+    dragData.target = e.target;
+    dragData.length = e.target.dataset.length;
+    dragData.i = e.target.dataset.i;
+    e.target.classList.add('dragging');
+  });
+  document.addEventListener('dragend', (event) => {
+    // reset the transparency
+    event.target.classList.remove('dragging');
+  });
+  document.addEventListener('dragover', (event) => {
+    // prevent default to allow drop
+    event.preventDefault();
+  }, false);
+  document.addEventListener('dragenter', (event) => {
+    if (event.target.classList.contains('dropzone')) {
+      const { coord } = event.target.dataset;
+      const [a, b] = coord.split(',');
+      const pBoard = game.getPBoard();
+      const check = pBoard.checkDrop([a, b], dragData.length);
+      const coords = pBoard.getCoords([a, b], dragData.length);
+      coords.forEach((e) => {
+        const box = document.querySelector(`#left div[data-coord='${e}']`);
+        if (check) {
+          box.classList.add('valid-drop');
+        } else {
+          box.classList.add('invalid-drop');
+        }
+      });
+    }
+  });
+  document.addEventListener('dragleave', (event) => {
+    if (event.target.classList.contains('dropzone')) {
+      removeDragClasses(event);
+    }
+  });
+  document.addEventListener('drop', (event) => {
+    event.preventDefault();
+    const pBoard = game.getPBoard();
+    if (event.target.classList.contains('dropzone')) {
+      removeDragClasses(event);
+      const { coord } = event.target.dataset;
+      const [a, b] = coord.split(',');
+      const check = pBoard.checkDrop([a, b], dragData.length);
+      const coords = pBoard.getCoords([a, b], dragData.length);
+      if (check) {
+        pBoard.addShip(coords, dragData.i);
+        const shipBox = document.getElementById('ship-box');
+        shipBox.removeChild(dragData.target);
+      }
+    }
+    const grid = pBoard.getGrid();
+    displayState.displayShips(grid);
+  });
+  function removeDragClasses(event) {
+    const { coord } = event.target.dataset;
+    const [a, b] = coord.split(',');
+    const pBoard = game.getPBoard();
+    const coords = pBoard.getCoords([a, b], dragData.length);
+    coords.forEach((e) => {
+      const box = document.querySelector(`#left div[data-coord='${e}']`);
+      box.classList.remove('valid-drop');
+      box.classList.remove('invalid-drop');
+    });
+  }
+})();
+
 const grid = (() => {
   const pGrid = document.querySelector('#left .grid');
   const cGrid = document.querySelector('#right .grid');
@@ -16,6 +85,8 @@ const grid = (() => {
         div.dataset.coord = [i, e];
         if (comp) {
           div.addEventListener('click', attack, { once: true });
+        } else {
+          div.classList.add('dropzone');
         }
         const img = document.createElement('img');
         div.appendChild(img);
@@ -67,9 +138,6 @@ const createGridGuides = (() => {
   }
 })();
 
-const shipBox = (() => {
-
-})();
 const displayState = (() => {
   function display(pGrid, cGrid) {
     displayShips(pGrid);
@@ -139,9 +207,12 @@ const displayState = (() => {
   }
   function displayShipBox(ships) {
     const shipBox = document.getElementById('ship-box');
-    Object.values(ships).forEach((e) => {
+    ships.forEach((e, i) => {
       const div = document.createElement('div');
       div.classList = 'ship-div';
+      div.dataset.length = e.length;
+      div.dataset.i = i;
+      div.draggable = true;
       for (let i = 0; i < e.length; i++) {
         const sDiv = document.createElement('div');
         sDiv.classList = 'ship';
@@ -150,7 +221,7 @@ const displayState = (() => {
       shipBox.appendChild(div);
     });
   }
-  return { display, displayShipBox };
+  return { display, displayShipBox, displayShips };
 })();
 
 function endGame(winner) {

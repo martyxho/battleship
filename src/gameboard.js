@@ -113,7 +113,7 @@ const gameboard = () => {
     return obj;
   }
   function randomPopulate() {
-    Object.values(ships).forEach((e) => {
+    ships.forEach((e) => {
       const { length } = e;
       const x = 11 - length;
       const random = Math.floor(Math.random() * 2) + 1;
@@ -156,7 +156,6 @@ const gameboard = () => {
   }
   function checkGridVert(number, letter, ship) {
     let works = true;
-    const start = number;
     const end = number + ship.length;
     for (let i = number; i < end; i++) {
       const check = !checkSurrounding(i, letter, ship);
@@ -179,7 +178,8 @@ const gameboard = () => {
     }
     return works;
   }
-  function checkSurrounding(i, b, shipObj) {
+  function checkSurrounding(a, b, shipObj) {
+    const i = +a;
     const iUp = i - 1;
     const iDown = i + 1;
     const bLeft = getAlpha(b, -1);
@@ -272,9 +272,7 @@ const gameboard = () => {
     const s1c = ship.createShip(1);
     const s1d = ship.createShip(1);
 
-    return {
-      s4a, s3a, s3b, s2a, s2b, s2c, s1a, s1b, s1c, s1d,
-    };
+    return [s4a, s3a, s3b, s2a, s2b, s2c, s1a, s1b, s1c, s1d];
   }
 
   function createGameboard() {
@@ -318,6 +316,48 @@ const gameboard = () => {
   function getShips() {
     return ships;
   }
+  function checkDrop(coord, length) {
+    const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const [a, b] = coord;
+    const start = alpha.indexOf(b);
+    const end = alpha.indexOf(b) + +length;
+    let drop = true;
+    for (let i = start; i < end; i++) {
+      if (!checkValid(a, alpha[i])) {
+        drop = false;
+      } else {
+        const box = grid[a][alpha[i]];
+        if (box) {
+          drop = false;
+        }
+      }
+      if (!checkSurrounding(a, alpha[i], {})) {
+        drop = false;
+      }
+    }
+    return drop;
+  }
+  function getCoords(coord, length) {
+    const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const [a, b] = coord;
+    const start = alpha.indexOf(b);
+    const end = alpha.indexOf(b) + +length;
+    const coords = [];
+    for (let i = start; i < end; i++) {
+      if (!checkValid(a, alpha[i])) {
+        return coords;
+      }
+      coords.push(`${a},${alpha[i]}`);
+    }
+    return coords;
+  }
+  function addShip(coords, i) {
+    const ship = ships[i];
+    coords.forEach((e) => {
+      const [a, b] = e.split(',');
+      grid[a][b] = ship;
+    });
+  }
   return {
     getGrid,
     receiveAttack,
@@ -331,6 +371,9 @@ const gameboard = () => {
     randomPopulate,
     checkSurrounding,
     getShips,
+    checkDrop,
+    getCoords,
+    addShip,
   };
 };
 
