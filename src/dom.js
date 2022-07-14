@@ -50,13 +50,16 @@ const drag = (() => {
       const check = pBoard.checkDrop([a, b], dragData.length);
       const coords = pBoard.getCoords([a, b], dragData.length);
       if (check) {
+        pBoard.removeShip(dragData.i);
         pBoard.addShip(coords, dragData.i);
-        const shipBox = document.getElementById('ship-box');
-        shipBox.removeChild(dragData.target);
+        if (dragData.target.parentElement.id === 'ship-box') {
+          const shipBox = document.getElementById('ship-box');
+          shipBox.removeChild(dragData.target);
+        }
       }
     }
     const grid = pBoard.getGrid();
-    displayState.displayShips(grid);
+    displayState.displayShipsPlayer(grid);
   });
   function removeDragClasses(event) {
     const { coord } = event.target.dataset;
@@ -108,7 +111,17 @@ const grid = (() => {
   function removeOneListener(box) {
     box.removeEventListener('click', attack);
   }
-  return { removeListeners, removeOneListener };
+  function resetPlayerGrid() {
+    clearPlayerGrid();
+    createGridBoxes(pGrid, false);
+  }
+  function clearPlayerGrid() {
+    const grid = document.querySelector('#left .grid');
+    while (grid.firstChild) {
+      grid.removeChild(grid.firstChild);
+    }
+  }
+  return { removeListeners, removeOneListener, resetPlayerGrid };
 })();
 
 const createGridGuides = (() => {
@@ -140,13 +153,15 @@ const createGridGuides = (() => {
 
 const displayState = (() => {
   function display(pGrid, cGrid) {
-    displayShips(pGrid);
+    displayShipsPlayer(pGrid);
     displayShipsComputer(cGrid);
     displayHitsBoth(pGrid, cGrid);
   }
-  function displayShips(grid) {
+  function displayShipsPlayer(pGrid) {
+    grid.resetPlayerGrid();
+
     const gridDisplay = document.querySelector('#left .grid');
-    Object.entries(grid).forEach((e) => {
+    Object.entries(pGrid).forEach((e) => {
       const [key1, val1] = e;
       Object.entries(val1).forEach((j) => {
         const [key2, val2] = j;
@@ -154,6 +169,9 @@ const displayState = (() => {
           if (val2.hasOwnProperty('isSunk')) {
             const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
             box.classList.add('ship');
+            box.dataset.length = val2.length;
+            box.dataset.i = val2.i;
+            box.draggable = true;
           }
         }
       });
@@ -169,6 +187,7 @@ const displayState = (() => {
           if (val2.hasOwnProperty('isSunk')) {
             const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
             box.classList.add('ship');
+            box.draggable = true;
           }
         }
       });
@@ -221,7 +240,7 @@ const displayState = (() => {
       shipBox.appendChild(div);
     });
   }
-  return { display, displayShipBox, displayShips };
+  return { display, displayShipBox, displayShipsPlayer };
 })();
 
 function endGame(winner) {

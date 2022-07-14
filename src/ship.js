@@ -1,5 +1,5 @@
 const ship = (() => {
-  function createShip(length) {
+  function createShip(length, i) {
     let hits = 0;
     const hit = (n) => {
       if (hits < length) {
@@ -16,6 +16,7 @@ const ship = (() => {
     };
     return {
       length,
+      i,
       hit,
       isSunk,
     };

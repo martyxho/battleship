@@ -261,16 +261,16 @@ const gameboard = () => {
     }
   }
   function createShips() {
-    const s4a = ship.createShip(4);
-    const s3a = ship.createShip(3);
-    const s3b = ship.createShip(3);
-    const s2a = ship.createShip(2);
-    const s2b = ship.createShip(2);
-    const s2c = ship.createShip(2);
-    const s1a = ship.createShip(1);
-    const s1b = ship.createShip(1);
-    const s1c = ship.createShip(1);
-    const s1d = ship.createShip(1);
+    const s4a = ship.createShip(4, 0);
+    const s3a = ship.createShip(3, 1);
+    const s3b = ship.createShip(3, 2);
+    const s2a = ship.createShip(2, 3);
+    const s2b = ship.createShip(2, 4);
+    const s2c = ship.createShip(2, 5);
+    const s1a = ship.createShip(1, 6);
+    const s1b = ship.createShip(1, 7);
+    const s1c = ship.createShip(1, 8);
+    const s1d = ship.createShip(1, 9);
 
     return [s4a, s3a, s3b, s2a, s2b, s2c, s1a, s1b, s1c, s1d];
   }
@@ -358,6 +358,19 @@ const gameboard = () => {
       grid[a][b] = ship;
     });
   }
+  function removeShip(i) {
+    const ship = ships[i];
+    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    Object.values(grid).forEach((e, i) => {
+      Object.values(e).forEach((x, j) => {
+        if (x === ship) {
+          const a = i + 1;
+          const b = alphabet[j];
+          grid[a][b] = null;
+        }
+      });
+    });
+  }
   return {
     getGrid,
     receiveAttack,
@@ -374,6 +387,7 @@ const gameboard = () => {
     checkDrop,
     getCoords,
     addShip,
+    removeShip,
   };
 };
 
