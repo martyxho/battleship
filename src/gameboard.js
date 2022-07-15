@@ -1,7 +1,7 @@
 import ship from './ship';
 
 const gameboard = () => {
-  const grid = createGameboard();
+  let grid = createGameboard();
   const ships = createShips();
   function receiveAttack(a, b) {
     const coord = grid[a][b];
@@ -434,6 +434,9 @@ const gameboard = () => {
       addShip(coords, i, false);
     }
   }
+  function resetGrid() {
+    grid = createGameboard();
+  }
   return {
     getGrid,
     receiveAttack,
@@ -455,6 +458,7 @@ const gameboard = () => {
     removeShip,
     changeOriVert,
     changeOriHor,
+    resetGrid,
   };
 };
 

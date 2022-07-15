@@ -10,7 +10,7 @@ const game = (() => {
   const computer = computerFactory();
   const cBoard = computer.getBoard();
   displayState.displayShipBox(pShips);
-  displayState.display(pBoard, cBoard.getGrid());
+  displayState.display(pBoard);
   function gameLoop(comp = computer) {
     comp.attack(pBoard);
     displayState.displayHitsBoth(pBoard.getGrid(), cBoard.getGrid());

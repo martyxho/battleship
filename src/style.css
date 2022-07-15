@@ -112,3 +112,7 @@
 .invalid-drop {
   background-color: rgba(212, 116, 99, 0.301);
 }
+
+.hide {
+  display: none;
+}

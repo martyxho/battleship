@@ -2,6 +2,25 @@ import game from '.';
 import x from './assets/close.svg';
 import dot from './assets/circle-medium.svg';
 
+const btns = (() => {
+  const placeBtn = document.getElementById('place');
+  placeBtn.onclick = showShipBox;
+  const randomBtn = document.getElementById('random');
+  randomBtn.onclick = randomPShips;
+  function showShipBox() {
+    const pBoard = game.getPBoard();
+    pBoard.resetGrid();
+    displayState.displayShipsPlayer(pBoard);
+    const shipBox = document.getElementById('hide-div');
+    shipBox.classList.remove('hide');
+  }
+  function randomPShips() {
+    const pBoard = game.getPBoard();
+    pBoard.resetGrid();
+    pBoard.randomPopulate();
+    displayState.displayShipsPlayer(pBoard, false);
+  }
+})();
 const drag = (() => {
   const dragData = {};
   document.addEventListener('dragstart', (e) => {
@@ -171,11 +190,10 @@ const createGridGuides = (() => {
 })();
 
 const displayState = (() => {
-  function display(pBoard, cGrid) {
+  function display(pBoard) {
     displayShipsPlayer(pBoard);
-    displayShipsComputer(cGrid);
   }
-  function displayShipsPlayer(pBoard) {
+  function displayShipsPlayer(pBoard, interact = true) {
     grid.resetPlayerGrid();
     const pGrid = pBoard.getGrid();
     const gridDisplay = document.querySelector('#left .grid');
@@ -187,12 +205,14 @@ const displayState = (() => {
           if (val2.hasOwnProperty('isSunk')) {
             const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
             box.classList.add('ship');
-            box.dataset.length = val2.length;
-            box.dataset.i = val2.i;
-            box.dataset.head = val2.head;
-            box.draggable = true;
-            box.dataset.hor = val2.hor;
-            box.onclick = changeOri;
+            if (interact) {
+              box.dataset.length = val2.length;
+              box.dataset.i = val2.i;
+              box.dataset.head = val2.head;
+              box.draggable = true;
+              box.dataset.hor = val2.hor;
+              box.onclick = changeOri;
+            }
           }
         }
       });
