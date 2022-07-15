@@ -10,10 +10,10 @@ const game = (() => {
   const computer = computerFactory();
   const cBoard = computer.getBoard();
   displayState.displayShipBox(pShips);
-  displayState.display(pBoard.getGrid(), cBoard.getGrid());
+  displayState.display(pBoard, cBoard.getGrid());
   function gameLoop(comp = computer) {
     comp.attack(pBoard);
-    displayState.display(pBoard.getGrid(), cBoard.getGrid());
+    displayState.displayHitsBoth(pBoard.getGrid(), cBoard.getGrid());
     if (checkEnd()) {
       endGame('computer');
     }
@@ -21,7 +21,7 @@ const game = (() => {
   function receivePlayerAttack(coord) {
     const [a, b] = coord;
     const hit = cBoard.receiveAttack(a, b);
-    displayState.display(pBoard.getGrid(), cBoard.getGrid());
+    displayState.displayHitsBoth(pBoard.getGrid(), cBoard.getGrid());
     if (checkEnd()) {
       endGame('player');
       return;

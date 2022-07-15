@@ -8,6 +8,7 @@ const drag = (() => {
     dragData.target = e.target;
     dragData.length = e.target.dataset.length;
     dragData.i = e.target.dataset.i;
+    dragData.hor = e.target.dataset.hor;
     e.target.classList.add('dragging');
   });
   document.addEventListener('dragend', (event) => {
@@ -23,8 +24,15 @@ const drag = (() => {
       const { coord } = event.target.dataset;
       const [a, b] = coord.split(',');
       const pBoard = game.getPBoard();
-      const check = pBoard.checkDrop([a, b], dragData.length);
-      const coords = pBoard.getCoords([a, b], dragData.length);
+      let check; let
+        coords;
+      if (dragData.hor === 'true') {
+        check = pBoard.checkDropHor([a, b], dragData.length, dragData.i);
+        coords = pBoard.getCoordsHor([a, b], dragData.length);
+      } else {
+        check = pBoard.checkDropVer([a, b], dragData.length, dragData.i);
+        coords = pBoard.getCoordsVer([a, b], dragData.length);
+      }
       coords.forEach((e) => {
         const box = document.querySelector(`#left div[data-coord='${e}']`);
         if (check) {
@@ -47,25 +55,36 @@ const drag = (() => {
       removeDragClasses(event);
       const { coord } = event.target.dataset;
       const [a, b] = coord.split(',');
-      const check = pBoard.checkDrop([a, b], dragData.length);
-      const coords = pBoard.getCoords([a, b], dragData.length);
+      let coords; let
+        check;
+      if (dragData.hor === 'true') {
+        check = pBoard.checkDropHor([a, b], dragData.length, dragData.i);
+        coords = pBoard.getCoordsHor([a, b], dragData.length);
+      } else {
+        check = pBoard.checkDropVer([a, b], dragData.length, dragData.i);
+        coords = pBoard.getCoordsVer([a, b], dragData.length);
+      }
       if (check) {
         pBoard.removeShip(dragData.i);
-        pBoard.addShip(coords, dragData.i);
+        pBoard.addShip(coords, dragData.i, dragData.hor);
         if (dragData.target.parentElement.id === 'ship-box') {
           const shipBox = document.getElementById('ship-box');
           shipBox.removeChild(dragData.target);
         }
       }
     }
-    const grid = pBoard.getGrid();
-    displayState.displayShipsPlayer(grid);
+    displayState.displayShipsPlayer(pBoard);
   });
   function removeDragClasses(event) {
     const { coord } = event.target.dataset;
     const [a, b] = coord.split(',');
     const pBoard = game.getPBoard();
-    const coords = pBoard.getCoords([a, b], dragData.length);
+    let coords;
+    if (dragData.hor === 'true') {
+      coords = pBoard.getCoordsHor([a, b], dragData.length);
+    } else {
+      coords = pBoard.getCoordsVer([a, b], dragData.length);
+    }
     coords.forEach((e) => {
       const box = document.querySelector(`#left div[data-coord='${e}']`);
       box.classList.remove('valid-drop');
@@ -152,14 +171,13 @@ const createGridGuides = (() => {
 })();
 
 const displayState = (() => {
-  function display(pGrid, cGrid) {
-    displayShipsPlayer(pGrid);
+  function display(pBoard, cGrid) {
+    displayShipsPlayer(pBoard);
     displayShipsComputer(cGrid);
-    displayHitsBoth(pGrid, cGrid);
   }
-  function displayShipsPlayer(pGrid) {
+  function displayShipsPlayer(pBoard) {
     grid.resetPlayerGrid();
-
+    const pGrid = pBoard.getGrid();
     const gridDisplay = document.querySelector('#left .grid');
     Object.entries(pGrid).forEach((e) => {
       const [key1, val1] = e;
@@ -171,11 +189,25 @@ const displayState = (() => {
             box.classList.add('ship');
             box.dataset.length = val2.length;
             box.dataset.i = val2.i;
+            box.dataset.head = val2.head;
             box.draggable = true;
+            box.dataset.hor = val2.hor;
+            box.onclick = changeOri;
           }
         }
       });
     });
+  }
+  function changeOri(e) {
+    const pBoard = game.getPBoard();
+    let { hor } = e.target.dataset;
+    hor = (hor === 'true');
+    if (hor) {
+      pBoard.changeOriVert(e);
+    } else {
+      pBoard.changeOriHor(e);
+    }
+    displayShipsPlayer(pBoard);
   }
   function displayShipsComputer(grid) {
     const gridDisplay = document.querySelector('#right .grid');
@@ -187,7 +219,6 @@ const displayState = (() => {
           if (val2.hasOwnProperty('isSunk')) {
             const box = gridDisplay.querySelector(`div[data-coord = "${key1},${key2}"]`);
             box.classList.add('ship');
-            box.draggable = true;
           }
         }
       });
@@ -232,6 +263,7 @@ const displayState = (() => {
       div.dataset.length = e.length;
       div.dataset.i = i;
       div.draggable = true;
+      div.dataset.hor = true;
       for (let i = 0; i < e.length; i++) {
         const sDiv = document.createElement('div');
         sDiv.classList = 'ship';
@@ -240,7 +272,9 @@ const displayState = (() => {
       shipBox.appendChild(div);
     });
   }
-  return { display, displayShipBox, displayShipsPlayer };
+  return {
+    display, displayHitsBoth, displayShipBox, displayShipsPlayer,
+  };
 })();
 
 function endGame(winner) {

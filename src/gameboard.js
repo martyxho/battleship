@@ -316,10 +316,11 @@ const gameboard = () => {
   function getShips() {
     return ships;
   }
-  function checkDrop(coord, length) {
+  function checkDropHor(coord, length, index) {
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const ship = ships[index];
     const [a, b] = coord;
-    const start = alpha.indexOf(b);
+    const start = alpha.indexOf(b) + 1;
     const end = alpha.indexOf(b) + +length;
     let drop = true;
     for (let i = start; i < end; i++) {
@@ -328,16 +329,40 @@ const gameboard = () => {
       } else {
         const box = grid[a][alpha[i]];
         if (box) {
-          drop = false;
+          if (!(box === ship)) {
+            drop = false;
+          }
         }
       }
-      if (!checkSurrounding(a, alpha[i], {})) {
+      if (!checkSurrounding(a, alpha[i], ship)) {
         drop = false;
       }
     }
     return drop;
   }
-  function getCoords(coord, length) {
+  function checkDropVer(coord, length, index) {
+    let [a, b] = coord;
+    a = +a;
+    const ship = ships[index];
+    let drop = true;
+    for (let i = a + 1; i < a + +length; i++) {
+      if (!checkValid(i, b)) {
+        drop = false;
+      } else {
+        const box = grid[i][b];
+        if (box) {
+          if (!(box === ship)) {
+            drop = false;
+          }
+        }
+      }
+      if (!checkSurrounding(i, b, ship)) {
+        drop = false;
+      }
+    }
+    return drop;
+  }
+  function getCoordsHor(coord, length) {
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const [a, b] = coord;
     const start = alpha.indexOf(b);
@@ -351,8 +376,22 @@ const gameboard = () => {
     }
     return coords;
   }
-  function addShip(coords, i) {
+  function getCoordsVer(coord, length) {
+    let [a, b] = coord;
+    a = +a;
+    const coords = [];
+    for (let i = a; i < a + +length; i++) {
+      if (!checkValid(i, b)) {
+        return coords;
+      }
+      coords.push(`${i},${b}`);
+    }
+    return coords;
+  }
+  function addShip(coords, i, hor) {
     const ship = ships[i];
+    ship.head = coords[0];
+    ship.hor = hor;
     coords.forEach((e) => {
       const [a, b] = e.split(',');
       grid[a][b] = ship;
@@ -371,6 +410,30 @@ const gameboard = () => {
       });
     });
   }
+  function changeOriHor(e) {
+    const { head } = e.target.dataset;
+    const [a, b] = head.split(',');
+    const { length } = e.target.dataset;
+    const { i } = e.target.dataset;
+    const check = checkDropHor([a, b], length, i);
+    if (check) {
+      removeShip(i);
+      const coords = getCoordsHor([a, b], length);
+      addShip(coords, i, true);
+    }
+  }
+  function changeOriVert(e) {
+    const { head } = e.target.dataset;
+    const [a, b] = head.split(',');
+    const { length } = e.target.dataset;
+    const { i } = e.target.dataset;
+    const check = checkDropVer([a, b], length, i);
+    if (check) {
+      removeShip(i);
+      const coords = getCoordsVer([a, b], length);
+      addShip(coords, i, false);
+    }
+  }
   return {
     getGrid,
     receiveAttack,
@@ -384,10 +447,14 @@ const gameboard = () => {
     randomPopulate,
     checkSurrounding,
     getShips,
-    checkDrop,
-    getCoords,
+    checkDropHor,
+    checkDropVer,
+    getCoordsHor,
+    getCoordsVer,
     addShip,
     removeShip,
+    changeOriVert,
+    changeOriHor,
   };
 };
 
