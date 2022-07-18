@@ -52,6 +52,7 @@ const drag = (() => {
         check = pBoard.checkDropVer([a, b], dragData.length, dragData.i);
         coords = pBoard.getCoordsVer([a, b], dragData.length);
       }
+      console.log(check, coords);
       coords.forEach((e) => {
         const box = document.querySelector(`#left div[data-coord='${e}']`);
         if (check) {

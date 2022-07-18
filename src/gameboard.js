@@ -320,7 +320,7 @@ const gameboard = () => {
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const ship = ships[index];
     const [a, b] = coord;
-    const start = alpha.indexOf(b) + 1;
+    const start = alpha.indexOf(b);
     const end = alpha.indexOf(b) + +length;
     let drop = true;
     for (let i = start; i < end; i++) {
@@ -345,7 +345,7 @@ const gameboard = () => {
     a = +a;
     const ship = ships[index];
     let drop = true;
-    for (let i = a + 1; i < a + +length; i++) {
+    for (let i = a; i < a + +length; i++) {
       if (!checkValid(i, b)) {
         drop = false;
       } else {
