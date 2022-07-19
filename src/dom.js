@@ -259,9 +259,9 @@ const displayState = (() => {
   }
   function changeOri(e) {
     const pBoard = game.getPBoard();
-    let { hor } = e.target.dataset;
-    hor = (hor === 'true');
-    if (hor) {
+    const { hor } = e.target.dataset;
+    let check;
+    if (hor === 'true') {
       pBoard.changeOriVert(e);
     } else {
       pBoard.changeOriHor(e);

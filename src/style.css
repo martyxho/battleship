@@ -113,6 +113,44 @@
   background-color: rgba(212, 116, 99, 0.301);
 }
 
+#btns-div {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+#right .above {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#left .above {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+
+#left-text {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+#left .text {
+  margin-top: -25px;
+}
+
 .hide {
   display: none;
+}
+
+button {
+  padding: 10px;
+  color: rgb(17, 21, 54);
+  border-radius: 25px;
+  font-weight: bold;
+  background-color: rgba(99, 111, 212, 0.301);
+  border:rgba(99, 111, 212, 1) solid 2px;
 }
