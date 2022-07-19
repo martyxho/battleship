@@ -7,18 +7,49 @@ const btns = (() => {
   placeBtn.onclick = showShipBox;
   const randomBtn = document.getElementById('random');
   randomBtn.onclick = randomPShips;
+  const start = document.getElementById('start');
+  start.onclick = startGame;
+  function startGame() {
+    const pBoard = game.getPBoard();
+    const check = pBoard.checkGrid();
+    if (!check) {
+      alert('All Ships have not been placed');
+      return;
+    }
+    grid.addCGridListeners();
+    removeBtns();
+    closeShipBox();
+    grid.resetPlayerGrid();
+    displayState.displayShipsPlayer(pBoard, false);
+    displayState.displayText();
+  }
   function showShipBox() {
     const pBoard = game.getPBoard();
     pBoard.resetGrid();
+    displayState.resetShipBox();
     displayState.displayShipsPlayer(pBoard);
     const shipBox = document.getElementById('hide-div');
-    shipBox.classList.remove('hide');
+    shipBox.classList.toggle('hide');
+    const shipText = document.querySelector('#left .text');
+    shipText.classList.toggle('hide');
   }
   function randomPShips() {
+    closeShipBox();
     const pBoard = game.getPBoard();
     pBoard.resetGrid();
     pBoard.randomPopulate();
     displayState.displayShipsPlayer(pBoard, false);
+    displayState.hideShipText();
+  }
+  function closeShipBox() {
+    const shipBox = document.getElementById('hide-div');
+    shipBox.classList.add('hide');
+    displayState.hideShipText();
+  }
+  function removeBtns() {
+    placeBtn.classList.add('hide');
+    randomBtn.classList.add('hide');
+    start.classList.add('hide');
   }
 })();
 const drag = (() => {
@@ -52,7 +83,6 @@ const drag = (() => {
         check = pBoard.checkDropVer([a, b], dragData.length, dragData.i);
         coords = pBoard.getCoordsVer([a, b], dragData.length);
       }
-      console.log(check, coords);
       coords.forEach((e) => {
         const box = document.querySelector(`#left div[data-coord='${e}']`);
         if (check) {
@@ -125,9 +155,7 @@ const grid = (() => {
         const div = document.createElement('div');
         div.classList = 'grid-div';
         div.dataset.coord = [i, e];
-        if (comp) {
-          div.addEventListener('click', attack, { once: true });
-        } else {
+        if (!comp) {
           div.classList.add('dropzone');
         }
         const img = document.createElement('img');
@@ -136,7 +164,15 @@ const grid = (() => {
       });
     }
   }
+  function addCGridListeners() {
+    const grid = document.querySelector('#right .grid');
+    const gridDivs = grid.querySelectorAll('.grid-div');
+    gridDivs.forEach((e) => {
+      e.addEventListener('click', attack, { once: true });
+    });
+  }
   function attack(e) {
+    displayState.hideText();
     const coord = e.target.dataset.coord.split(',');
     game.receivePlayerAttack(coord);
   }
@@ -160,7 +196,9 @@ const grid = (() => {
       grid.removeChild(grid.firstChild);
     }
   }
-  return { removeListeners, removeOneListener, resetPlayerGrid };
+  return {
+    removeListeners, removeOneListener, resetPlayerGrid, addCGridListeners,
+  };
 })();
 
 const createGridGuides = (() => {
@@ -293,8 +331,41 @@ const displayState = (() => {
       shipBox.appendChild(div);
     });
   }
+  function deleteShips() {
+    const shipBox = document.getElementById('ship-box');
+    while (shipBox.firstChild) {
+      shipBox.removeChild(shipBox.firstChild);
+    }
+  }
+  function resetShipBox() {
+    const pBoard = game.getPBoard();
+    const ships = pBoard.getShips();
+    deleteShips();
+    displayShipBox(ships);
+  }
+  function displayText() {
+    const text = document.querySelector('#right .text');
+    text.classList.remove('hide');
+  }
+  function hideText() {
+    const text = document.querySelector('#right .text');
+    text.classList.add('hide');
+  }
+
+  function hideShipText() {
+    const text = document.querySelector('#left .text');
+    text.classList.add('hide');
+  }
+
   return {
-    display, displayHitsBoth, displayShipBox, displayShipsPlayer,
+    display,
+    displayHitsBoth,
+    displayShipBox,
+    displayShipsPlayer,
+    resetShipBox,
+    displayText,
+    hideText,
+    hideShipText,
   };
 })();
 

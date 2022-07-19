@@ -437,6 +437,20 @@ const gameboard = () => {
   function resetGrid() {
     grid = createGameboard();
   }
+  function checkGrid() {
+    let count = 0;
+    Object.values(grid).forEach((e) => {
+      Object.values(e).forEach((x) => {
+        if (x) {
+          count += 1;
+        }
+      });
+    });
+    if (count === 20) {
+      return true;
+    }
+    return false;
+  }
   return {
     getGrid,
     receiveAttack,
@@ -459,6 +473,7 @@ const gameboard = () => {
     changeOriVert,
     changeOriHor,
     resetGrid,
+    checkGrid,
   };
 };
 

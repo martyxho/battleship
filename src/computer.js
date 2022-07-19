@@ -62,6 +62,12 @@ const computerFactory = () => {
   const board = gameboard();
   board.randomPopulate();
   state.setAdjMissFalse();
+  function logState(coord) {
+    const obj = {
+      coord, lastHit: state.getLastHit(), trav: state.getTraverse(), i: state.getI(),
+    };
+    console.log(obj);
+  }
   function getBoard() {
     return board;
   }

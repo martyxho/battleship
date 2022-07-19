@@ -6,10 +6,10 @@ import computerFactory from './computer';
 const game = (() => {
   const player = playerFactory();
   const pBoard = player.getBoard();
-  const pShips = pBoard.getShips();
+  const ships = pBoard.getShips();
   const computer = computerFactory();
   const cBoard = computer.getBoard();
-  displayState.displayShipBox(pShips);
+  displayState.displayShipBox(ships);
   displayState.display(pBoard);
   function gameLoop(comp = computer) {
     comp.attack(pBoard);
