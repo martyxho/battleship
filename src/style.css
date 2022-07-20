@@ -94,6 +94,7 @@
 
 .ship {
   background-color: rgba(99, 111, 212, 0.301);
+  transition: background-color .1s ease-out;
 }
 
 .hit {
@@ -146,6 +147,9 @@
   display: none;
 }
 
+.red {
+  background-color: rgba(212, 116, 99, 0.301);
+}
 button {
   padding: 10px;
   color: rgb(17, 21, 54);

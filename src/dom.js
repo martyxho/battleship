@@ -260,13 +260,39 @@ const displayState = (() => {
   function changeOri(e) {
     const pBoard = game.getPBoard();
     const { hor } = e.target.dataset;
+    const { head } = e.target.dataset;
+    const [a, b] = head.split(',');
+    const { length } = e.target.dataset;
+    const { i } = e.target.dataset;
     let check;
     if (hor === 'true') {
-      pBoard.changeOriVert(e);
+      check = pBoard.checkDropVer([a, b], length, i);
     } else {
-      pBoard.changeOriHor(e);
+      check = pBoard.checkDropHor([a, b], length, i);
     }
-    displayShipsPlayer(pBoard);
+    if (check) {
+      if (hor === 'true') {
+        pBoard.changeOriVert(e);
+      } else {
+        pBoard.changeOriHor(e);
+      }
+      displayShipsPlayer(pBoard);
+    }
+    if (!check) {
+      let coords;
+      if (hor === 'true') {
+        coords = pBoard.getCoordsVer([a, b], length);
+      } else {
+        coords = pBoard.getCoordsHor([a, b], length);
+      }
+      coords.forEach((x) => {
+        const box = document.querySelector(`#left div[data-coord='${x}']`);
+        box.classList.add('red');
+        setTimeout(() => {
+          box.classList.remove('red');
+        }, '100');
+      });
+    }
   }
   function displayShipsComputer(grid) {
     const gridDisplay = document.querySelector('#right .grid');
