@@ -105,6 +105,7 @@ const gameboard = () => {
     const i = alphabet.indexOf(b) + n;
     return alphabet[i];
   }
+
   function hitObj(ship = null) {
     const obj = { marker: 'x' };
     if (ship) {
