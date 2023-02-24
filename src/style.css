@@ -31,6 +31,7 @@
   justify-content: center;
   align-items: center;
 }
+
 #ship-box {
   width: 400px;
   height: 200px;
@@ -39,11 +40,14 @@
   flex-wrap: wrap;
   padding: 10px;
 }
+
 .ship-div {
   display: flex;
   margin-right: 10px;
   height: 40px;
+  cursor: pointer;
 } 
+
 #ship-box .ship {
   height: 39px;
   width: 39px;
@@ -158,4 +162,5 @@ button {
   font-weight: bold;
   background-color: rgba(99, 111, 212, 0.301);
   border:rgba(99, 111, 212, 1) solid 2px;
+  cursor: pointer;
 }
