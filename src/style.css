@@ -131,6 +131,7 @@
 #left .above {
   display: grid;
   grid-template-rows: max-content 1fr;
+  padding-top: 70px;
 }
 
 #left-text {
